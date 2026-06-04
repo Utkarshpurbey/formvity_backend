@@ -44,7 +44,8 @@ public class FormPublicationServiceImpl implements FormPublicationService {
             if(formDetails.getDraftPageDef() == null){
                 throw new FormvityException(HttpStatus.BAD_REQUEST,"Missing page Def for this form. Please try another form ");
             }
-            FormPublicationEntity currentPublication = formPublicationRepository.findByFormIdAndCurrentTrue(formId).orElse(null);
+            FormPublicationEntity currentPublication =
+                    formPublicationRepository.findByForm_IdAndCurrentTrue(formId).orElse(null);
             int nextVersion = currentPublication == null ? 1: currentPublication.getVersion() +1;
             String publicId,slug;
             if(currentPublication == null){

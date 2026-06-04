@@ -1,23 +1,27 @@
-# Build stage — Maven + Java 21 (matches pom.xml)
-FROM eclipse-temurin:21-jdk-alpine AS builder
+# Build — Debian-based JDK (Alpine often breaks Maven wrapper / runs OOM on Render)
+FROM eclipse-temurin:21-jdk-jammy AS builder
 
 WORKDIR /app
+
+ENV MAVEN_OPTS="-Xmx768m"
 
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
+
+RUN chmod +x mvnw && ./mvnw dependency:go-offline -B -DskipTests
+
 COPY src src
 
-RUN chmod +x mvnw && ./mvnw -q package -DskipTests
+RUN ./mvnw package -DskipTests -B
 
-# Runtime stage
-FROM eclipse-temurin:21-jre-alpine
+# Runtime
+FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
 
 COPY --from=builder /app/target/formvity-0.0.1-SNAPSHOT.jar app.jar
 
-# Render sets PORT; Spring reads server.port=${PORT}
 EXPOSE 8081
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

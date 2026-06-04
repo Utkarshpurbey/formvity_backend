@@ -7,6 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface FormPublicationRepository extends JpaRepository<FormPublicationEntity, UUID> {
-    Optional<FormPublicationEntity> findByFormIdAndCurrentTrue(UUID formid);
+    Optional<FormPublicationEntity> findByForm_IdAndCurrentTrue(UUID formId);
     Optional<FormPublicationEntity> findByPublicIdAndCurrentTrue(String slug);
 }
