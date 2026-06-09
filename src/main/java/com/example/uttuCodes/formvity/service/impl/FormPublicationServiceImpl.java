@@ -41,43 +41,49 @@ public class FormPublicationServiceImpl implements FormPublicationService {
     @Override
     @Transactional
     public Optional<FormPublicationEntity> publishForm(UUID workspaceId, UUID formId, UUID userId) {
-        try {
-            workspaceAccessService.requireUserExistInWorkSpace(userId, workspaceId);
-            FormEntity formDetails = formRepository.findByIdAndWorkspace_WorkSpaceId(formId, workspaceId)
-                    .orElseThrow(() -> FormvityException.notFound("No form exists with form id " + formId));
-            if(formDetails.getDraftPageDef() == null){
-                throw new FormvityException(HttpStatus.BAD_REQUEST,"Missing page Def for this form. Please try another form ");
-            }
-            FormPublicationEntity currentPublication =
-                    formPublicationRepository.findByForm_IdAndCurrentTrue(formId).orElse(null);
-            int nextVersion = currentPublication == null ? 1: currentPublication.getVersion() +1;
-            String publicId,slug;
-            if(currentPublication == null){
-                String DEFAULT_ALPHABET_After_removal = new String(NanoIdUtils.DEFAULT_ALPHABET).replace("-", "").replace("_", "");
-                char[] cleanedAlphabet = DEFAULT_ALPHABET_After_removal.toCharArray();
-                publicId = NanoIdUtils.randomNanoId(NanoIdUtils.DEFAULT_NUMBER_GENERATOR, cleanedAlphabet, 10);
-                slug = generateSlug(formDetails.getTitle(), publicId);
-            }else{
-                publicId = currentPublication.getPublicId();
-                slug = currentPublication.getSlug();
-                currentPublication.setCurrent(false);
-            }
-
-            FormPublicationEntity publication = new FormPublicationEntity();
-            publication.setForm(formDetails);
-            publication.setPublicId(publicId);
-            publication.setSlug(slug);
-            publication.setVersion(nextVersion);
-            publication.setCurrent(true);
-            publication.setPublishedPageDef(formDetails.getDraftPageDef());
-            publication.setPublishedAt(LocalDateTime.now());
-            FormPublicationEntity savedPublication = formPublicationRepository.save(publication);
-            formDetails.setStatus(FormStatus.PUBLISHED);
-            formRepository.save(formDetails);
-            return Optional.of(savedPublication);
-        } catch (Exception e) {
-            throw new FormvityException(HttpStatus.BAD_REQUEST, "Error is publishing the form");
+        workspaceAccessService.requireUserExistInWorkSpace(userId, workspaceId);
+        FormEntity formDetails = formRepository.findByIdAndWorkspace_WorkSpaceId(formId, workspaceId)
+                .orElseThrow(() -> FormvityException.notFound("No form exists with form id " + formId));
+        if (formDetails.getDraftPageDef() == null) {
+            throw FormvityException.badRequest("Missing page definition for this form");
         }
+
+        FormPublicationEntity currentPublication =
+                formPublicationRepository.findByForm_IdAndCurrentTrue(formId).orElse(null);
+        int nextVersion = currentPublication == null ? 1 : currentPublication.getVersion() + 1;
+
+        String publicId;
+        String slug;
+        if (currentPublication == null) {
+            String alphabetWithoutSeparators = new String(NanoIdUtils.DEFAULT_ALPHABET)
+                    .replace("-", "")
+                    .replace("_", "");
+            publicId = NanoIdUtils.randomNanoId(
+                    NanoIdUtils.DEFAULT_NUMBER_GENERATOR, alphabetWithoutSeparators.toCharArray(), 10);
+            slug = generateSlug(formDetails.getTitle(), publicId);
+        } else {
+            publicId = currentPublication.getPublicId();
+            slug = currentPublication.getSlug();
+            currentPublication.setCurrent(false);
+            // Release the live slug so the new current publication row can reuse the public URL.
+            currentPublication.setSlug(slug + "__v" + currentPublication.getVersion());
+            formPublicationRepository.saveAndFlush(currentPublication);
+        }
+
+        FormPublicationEntity publication = new FormPublicationEntity();
+        publication.setForm(formDetails);
+        publication.setPublicId(publicId);
+        publication.setSlug(slug);
+        publication.setVersion(nextVersion);
+        publication.setCurrent(true);
+        publication.setPublishedPageDef(formDetails.getDraftPageDef());
+        publication.setPublishedAt(LocalDateTime.now());
+
+        FormPublicationEntity savedPublication = formPublicationRepository.save(publication);
+        formDetails.setStatus(FormStatus.PUBLISHED);
+        formRepository.save(formDetails);
+        log.info("Published form {} version {} slug {}", formId, nextVersion, slug);
+        return Optional.of(savedPublication);
     }
 
     @Override

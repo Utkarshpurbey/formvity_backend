@@ -22,9 +22,9 @@ import java.util.UUID;
         name = "form_publications",
         indexes = {
                 @Index(name = "idx_form_publications_form_current", columnList = "form_id,is_current"),
-                @Index(name = "idx_form_publications_form_version", columnList = "form_id,version")
-        },
-        uniqueConstraints = @UniqueConstraint(name = "uk_form_publications_slug", columnNames = "slug"))
+                @Index(name = "idx_form_publications_form_version", columnList = "form_id,version"),
+                @Index(name = "idx_form_publications_public_id", columnList = "public_id")
+        })
 public class FormPublicationEntity {
 
     @Id
