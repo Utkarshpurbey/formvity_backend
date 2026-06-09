@@ -9,4 +9,5 @@ import java.util.UUID;
 public interface FormPublicationRepository extends JpaRepository<FormPublicationEntity, UUID> {
     Optional<FormPublicationEntity> findByForm_IdAndCurrentTrue(UUID formId);
     Optional<FormPublicationEntity> findByPublicIdAndCurrentTrue(String slug);
+    Optional<FormPublicationEntity> findTopByForm_IdOrderByVersionDesc(UUID formId);
 }

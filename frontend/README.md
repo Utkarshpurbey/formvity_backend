@@ -14,13 +14,13 @@ Opens http://localhost:3000 — API at http://localhost:8081/api/v1
 
 ## Routes
 
-| Route | Purpose |
-|-------|---------|
-| `/login` | Sign in (JWT) |
-| `/app/workspaces` | Workspace home (no forms) |
-| `/app/workspaces/:id` | Forms list for one workspace |
+| Route                               | Purpose |
+|-------------------------------------|---------|
+| `/login`                            | Sign in (JWT) |
+| `/app/workspaces`                   | Workspace home (no forms) |
+| `/app/workspaces/:id`               | Forms list for one workspace |
 | `/app/workspaces/:id/forms/:formId` | Form editor |
-| `/f/:slug` | Public published form |
+| `/r/:slug`                          | Public published form |
 
 ## API (backend)
 

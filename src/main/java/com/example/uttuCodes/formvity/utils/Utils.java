@@ -32,16 +32,4 @@ public final class Utils {
         }
         throw FormvityException.unauthorized("Please re-login");
     }
-
-    /** @deprecated use {@link #getLoggedInUserId()} — JWT auth does not use HTTP session */
-    @Deprecated
-    public static UUID getLoggedInUserId(jakarta.servlet.http.HttpServletRequest request) {
-        return getLoggedInUserId();
-    }
-
-    /** @deprecated use {@link #getLoggedInUserId()} */
-    @Deprecated
-    public static UUID getLogedInUserId(jakarta.servlet.http.HttpServletRequest request) {
-        return getLoggedInUserId();
-    }
 }

@@ -49,7 +49,7 @@ export function FormEditorPage() {
         `/workspaces/${workspaceId}/forms/${formId}/publish`,
         { method: "POST" }
       );
-      setMessage(`Published${pub?.slug ? ` · /f/${pub.slug}` : ""}`);
+      setMessage(`Published${pub?.slug ? ` · /r/${pub.slug}` : ""}`);
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Publish failed");
     } finally {
@@ -75,6 +75,12 @@ export function FormEditorPage() {
           />
         </div>
         <div className="flex items-center gap-2 shrink-0">
+          <Link
+            to={`/app/workspaces/${workspaceId}/forms/${formId}/responses`}
+            className="rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm font-medium hover:bg-[#f1f3f4]"
+          >
+            Responses
+          </Link>
           {message && (
             <span className="text-sm text-[#5f6368] mr-2">{message}</span>
           )}

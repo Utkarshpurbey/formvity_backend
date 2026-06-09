@@ -16,9 +16,8 @@ import com.example.uttuCodes.formvity.repository.WorkspaceMemberRepository;
 import com.example.uttuCodes.formvity.service.WorkSpaceService;
 import com.example.uttuCodes.formvity.utils.WorkspaceAccessService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,11 +27,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class WorkSpaceServiceImpl implements WorkSpaceService {
-
-    private static final Logger log = LoggerFactory.getLogger(WorkSpaceServiceImpl.class);
 
     private final WorkspaceMemberRepository workspaceMemberRepository;
     private final WorkSpaceRepository workSpaceRepository;

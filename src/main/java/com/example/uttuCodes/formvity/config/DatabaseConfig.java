@@ -1,18 +1,16 @@
 package com.example.uttuCodes.formvity.config;
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 
+@Slf4j
 @Configuration
 public class DatabaseConfig {
-
-    private static final Logger log = LoggerFactory.getLogger(DatabaseConfig.class);
 
     private static final String LOCAL_JDBC = "jdbc:postgresql://localhost:5432/formvity";
 

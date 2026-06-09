@@ -3,6 +3,7 @@ package com.example.uttuCodes.formvity.web;
 import com.example.uttuCodes.formvity.dto.FormInputDto;
 import com.example.uttuCodes.formvity.dto.FormOutputDto;
 import com.example.uttuCodes.formvity.dto.FormPatchDto;
+import com.example.uttuCodes.formvity.dto.PublishStatusResponse;
 import com.example.uttuCodes.formvity.entity.FormEntity;
 import com.example.uttuCodes.formvity.dto.response.ApiResponse;
 import com.example.uttuCodes.formvity.service.FormPublicationService;
@@ -80,5 +81,23 @@ public class WorkspaceFormsController {
             @PathVariable UUID formId) {
         UUID userId = Utils.getLoggedInUserId();
         return ResponseEntity.ok(ApiResponse.ok(formPublicationService.publishForm(workspaceId, formId, userId)));
+    }
+
+    @PostMapping("/{formId}/unpublish")
+    public ResponseEntity<ApiResponse<?>> unpublishForm(
+            @PathVariable UUID workspaceId,
+            @PathVariable UUID formId
+    ){
+        UUID userId = Utils.getLoggedInUserId();
+        return ResponseEntity.ok(ApiResponse.ok(formPublicationService.unPublishForm(workspaceId,formId,userId)));
+    }
+
+    @GetMapping("/{formId}/publish-status")
+    public ResponseEntity<ApiResponse<PublishStatusResponse>> publishStatus(
+            @PathVariable UUID workspaceId,
+            @PathVariable UUID formId
+    ){
+        UUID userId = Utils.getLoggedInUserId();
+        return ResponseEntity.ok(ApiResponse.ok(formPublicationService.getPublishStatus(workspaceId,formId,userId)));
     }
 }

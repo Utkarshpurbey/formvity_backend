@@ -5,6 +5,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { WorkspacesPage } from "./pages/WorkspacesPage";
 import { WorkspaceFormsPage } from "./pages/WorkspaceFormsPage";
 import { FormEditorPage } from "./pages/FormEditorPage";
+import { FormResponsesPage } from "./pages/FormResponsesPage";
 import { PublicFormPage } from "./pages/PublicFormPage";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -33,6 +34,10 @@ export default function App() {
         <Route
           path="workspaces/:workspaceId/forms/:formId"
           element={<FormEditorPage />}
+        />
+        <Route
+          path="workspaces/:workspaceId/forms/:formId/responses"
+          element={<FormResponsesPage />}
         />
       </Route>
 

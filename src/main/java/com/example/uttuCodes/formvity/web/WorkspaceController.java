@@ -11,6 +11,7 @@ import com.example.uttuCodes.formvity.service.WorkSpaceService;
 import com.example.uttuCodes.formvity.utils.Utils;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping("/workspaces")
@@ -28,6 +30,7 @@ public class WorkspaceController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<WorkspaceCardDto>>> listWorkspaces() {
         UUID userId = Utils.getLoggedInUserId();
+        log.debug("Listing workspaces for user {}", userId);
         return ResponseEntity.ok(ApiResponse.ok(workSpaceService.listWorkspaceCards(userId)));
     }
 
@@ -36,6 +39,7 @@ public class WorkspaceController {
             @RequestBody @Valid WorkSpaceCreateRequest request) {
         UUID userId = Utils.getLoggedInUserId();
         WorkSpacesEntity created = workSpaceService.createWorkSpace(request, userId);
+        log.info("Created workspace id={} name={} userId={}", created.getWorkSpaceId(), created.getWorkSpaceName(), userId);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.created(toOutputDto(created), "Workspace created"));
     }
@@ -61,6 +65,7 @@ public class WorkspaceController {
     @DeleteMapping("/{workspaceId}")
     public ResponseEntity<ApiResponse<String>> deleteWorkspace(@PathVariable UUID workspaceId) {
         workSpaceService.deleteWorkspace(workspaceId);
+        log.info("Deactivated workspace id={}", workspaceId);
         return ResponseEntity.ok(ApiResponse.ok("Workspace " + workspaceId + " deactivated"));
     }
 

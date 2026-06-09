@@ -12,6 +12,7 @@ import com.example.uttuCodes.formvity.security.JwtService;
 import com.example.uttuCodes.formvity.utils.Utils;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Locale;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
@@ -38,6 +40,7 @@ public class AuthController {
                 .orElseThrow(() -> FormvityException.unauthorized("Invalid username or password"));
 
         String token = jwtService.generateToken(user.getId(), user.getDisplayName());
+        log.info("User logged in id={}", user.getId());
         return ResponseEntity.ok(new LoginResponse(token, user.getId(), user.getDisplayName()));
     }
 
@@ -60,6 +63,7 @@ public class AuthController {
         user.setEmail(u.getEmail().trim().toLowerCase(Locale.ROOT));
         user.setPassword(passwordEncoder.encode(u.getPassword()));
         userRepository.save(user);
+        log.info("Registered new user id={} email={}", user.getId(), user.getEmail());
 
         String token = jwtService.generateToken(user.getId(), user.getDisplayName());
         LoginResponse loginResponse = new LoginResponse(token, user.getId(), user.getDisplayName());

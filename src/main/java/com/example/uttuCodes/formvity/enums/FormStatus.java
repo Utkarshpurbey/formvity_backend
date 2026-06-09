@@ -4,5 +4,6 @@ public enum FormStatus {
     DRAFT,
     PUBLISHED,
     EXPIRED,
+    UNPUBLISHED,
     ARCHIVED
 }
