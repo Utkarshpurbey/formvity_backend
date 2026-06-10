@@ -1,6 +1,7 @@
 package com.example.uttuCodes.formvity.web;
 
 import com.example.uttuCodes.formvity.dto.FormSubmissionInputDto;
+import com.example.uttuCodes.formvity.dto.SubmitFormResponseDto;
 import com.example.uttuCodes.formvity.dto.response.ApiResponse;
 import com.example.uttuCodes.formvity.service.FormPublicationService;
 import com.example.uttuCodes.formvity.service.SubmissionService;
@@ -24,7 +25,7 @@ public class PublicFormsController {
         return ResponseEntity.ok(ApiResponse.ok(formPublicationService.getPublishedPageDef(slug)));
     }
     @PostMapping("/{slug}/submit")
-    public ResponseEntity<ApiResponse<?>> submit(
+    public ResponseEntity<ApiResponse<SubmitFormResponseDto>> submit(
             @PathVariable String slug,
             @RequestBody FormSubmissionInputDto dto
     ) {

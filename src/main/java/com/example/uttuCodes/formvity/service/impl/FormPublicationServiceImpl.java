@@ -1,5 +1,6 @@
 package com.example.uttuCodes.formvity.service.impl;
 
+import com.example.uttuCodes.formvity.dto.PublishFormResponseDto;
 import com.example.uttuCodes.formvity.dto.PublishStatusResponse;
 import com.example.uttuCodes.formvity.entity.FormEntity;
 import com.example.uttuCodes.formvity.entity.FormPublicationEntity;
@@ -40,7 +41,7 @@ public class FormPublicationServiceImpl implements FormPublicationService {
 
     @Override
     @Transactional
-    public Optional<FormPublicationEntity> publishForm(UUID workspaceId, UUID formId, UUID userId) {
+    public PublishFormResponseDto publishForm(UUID workspaceId, UUID formId, UUID userId) {
         workspaceAccessService.requireUserExistInWorkSpace(userId, workspaceId);
         FormEntity formDetails = formRepository.findByIdAndWorkspace_WorkSpaceId(formId, workspaceId)
                 .orElseThrow(() -> FormvityException.notFound("No form exists with form id " + formId));
@@ -83,7 +84,7 @@ public class FormPublicationServiceImpl implements FormPublicationService {
         formDetails.setStatus(FormStatus.PUBLISHED);
         formRepository.save(formDetails);
         log.info("Published form {} version {} slug {}", formId, nextVersion, slug);
-        return Optional.of(savedPublication);
+        return PublishFormResponseDto.from(savedPublication);
     }
 
     @Override

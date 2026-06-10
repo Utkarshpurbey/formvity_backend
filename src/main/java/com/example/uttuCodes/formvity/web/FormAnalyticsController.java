@@ -31,7 +31,7 @@ public class FormAnalyticsController {
     public ResponseEntity<ApiResponse<FormAnalyticsOverviewDto>> overview(
             @PathVariable UUID workspaceId,
             @PathVariable UUID formId,
-            @RequestParam(defaultValue = "30") int days) {
+            @RequestParam(defaultValue = "7") int days) {
         UUID userId = Utils.getLoggedInUserId();
         return ResponseEntity.ok(
                 ApiResponse.ok(formAnalyticsService.getOverview(workspaceId, formId, userId, days)));
@@ -50,7 +50,7 @@ public class FormAnalyticsController {
     public ResponseEntity<ApiResponse<List<TimelineBucketDto>>> timeline(
             @PathVariable UUID workspaceId,
             @PathVariable UUID formId,
-            @RequestParam(defaultValue = "30") int days) {
+            @RequestParam(defaultValue = "7") int days) {
         UUID userId = Utils.getLoggedInUserId();
         return ResponseEntity.ok(
                 ApiResponse.ok(formAnalyticsService.getTimeline(workspaceId, formId, userId, days)));

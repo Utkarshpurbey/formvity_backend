@@ -3,6 +3,7 @@ package com.example.uttuCodes.formvity.web;
 import com.example.uttuCodes.formvity.dto.FormInputDto;
 import com.example.uttuCodes.formvity.dto.FormOutputDto;
 import com.example.uttuCodes.formvity.dto.FormPatchDto;
+import com.example.uttuCodes.formvity.dto.PublishFormResponseDto;
 import com.example.uttuCodes.formvity.dto.PublishStatusResponse;
 import com.example.uttuCodes.formvity.entity.FormEntity;
 import com.example.uttuCodes.formvity.dto.response.ApiResponse;
@@ -76,7 +77,7 @@ public class WorkspaceFormsController {
     }
 
     @PostMapping("/{formId}/publish")
-    public ResponseEntity<ApiResponse<?>> publishForm(
+    public ResponseEntity<ApiResponse<PublishFormResponseDto>> publishForm(
             @PathVariable UUID workspaceId,
             @PathVariable UUID formId) {
         UUID userId = Utils.getLoggedInUserId();

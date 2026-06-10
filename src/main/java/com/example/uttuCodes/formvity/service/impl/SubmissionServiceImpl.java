@@ -1,6 +1,7 @@
 package com.example.uttuCodes.formvity.service.impl;
 
 import com.example.uttuCodes.formvity.dto.FormSubmissionInputDto;
+import com.example.uttuCodes.formvity.dto.SubmitFormResponseDto;
 import com.example.uttuCodes.formvity.entity.FormEntity;
 import com.example.uttuCodes.formvity.entity.FormPublicationEntity;
 import com.example.uttuCodes.formvity.entity.SubmissionEntity;
@@ -25,7 +26,7 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     @Transactional
-    public SubmissionEntity submitAnswer(FormSubmissionInputDto formSubmissionInputDto, String slug) {
+    public SubmitFormResponseDto submitAnswer(FormSubmissionInputDto formSubmissionInputDto, String slug) {
 
         String publicId = slug.substring(slug.lastIndexOf('-') + 1);
         FormPublicationEntity formPublicationEntity = formPublicationRepository.
@@ -43,6 +44,6 @@ public class SubmissionServiceImpl implements SubmissionService {
        submissionEntity.setPublication(formPublicationEntity);
        submissionEntity.setRespondent(formSubmissionInputDto.getRespondent());
 
-       return submissionRepository.save(submissionEntity);
+       return SubmitFormResponseDto.from(submissionRepository.save(submissionEntity));
     }
 }

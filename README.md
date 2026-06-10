@@ -43,9 +43,9 @@ Example:
 jdbc:postgresql://dpg-xxxxx-a.oregon-postgres.render.com/formvity
 ```
 
-### 4. CORS (frontend)
+### 4. CORS (client apps)
 
-Set allowed origins in `SecurityConfig.java` or add env-based CORS for your Vercel/Render frontend URL.
+Set allowed origins via `CORS_ALLOWED_ORIGINS` (comma-separated) or update `SecurityConfig.java` for your client app URL.
 
 ### Optional: Blueprint
 
@@ -59,7 +59,6 @@ Set allowed origins in `SecurityConfig.java` or add env-based CORS for your Verc
 - `GET /workspaces` — workspace list (JWT required)
 - `GET /workspaces/{id}/forms` — forms in workspace
 - `GET /public/forms/{slug}` — public form (no auth)
-
-## Frontend
-
-See [frontend/README.md](frontend/README.md).
+- `POST /public/forms/{slug}/submit` — submit response (no auth)
+- `POST /workspaces/{id}/forms/{formId}/publish` — publish form (JWT)
+- `GET /workspaces/{id}/forms/{formId}/analytics` — form analytics (JWT)
