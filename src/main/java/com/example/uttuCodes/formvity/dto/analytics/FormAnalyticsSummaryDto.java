@@ -14,7 +14,15 @@ import java.time.LocalDateTime;
 public class FormAnalyticsSummaryDto {
     private long totalResponses;
     private long responsesToday;
+    private long responsesLast7Days;
+    private long responsesLast30Days;
     private LocalDateTime firstResponseAt;
     private LocalDateTime lastResponseAt;
     private Integer currentPublicationVersion;
+    private long uniqueRespondents;
+    private long returningRespondents;
+    private double avgCompletionRate;
+    private Integer peakHour;
+    private String peakDayOfWeek;
+    private long submissionsWithMetadata;
 }

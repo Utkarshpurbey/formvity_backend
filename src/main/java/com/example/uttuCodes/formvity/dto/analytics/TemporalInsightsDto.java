@@ -11,9 +11,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FormAnalyticsOverviewDto {
-    private FormAnalyticsSummaryDto summary;
-    private List<TimelineBucketDto> timeline;
-    private List<QuestionAnalyticsDto> questions;
-    private FormAnalyticsInsightsDto insights;
+public class TemporalInsightsDto {
+    private Integer peakHour;
+    private String peakDayOfWeek;
+    private List<HourBucketDto> byHourOfDay;
+    private List<DayOfWeekBucketDto> byDayOfWeek;
 }

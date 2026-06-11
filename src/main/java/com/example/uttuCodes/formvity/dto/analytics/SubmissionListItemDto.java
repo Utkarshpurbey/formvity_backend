@@ -19,4 +19,8 @@ public class SubmissionListItemDto {
     private int publicationVersion;
     private Map<String, Object> respondent;
     private Map<String, Object> answers;
+    private Map<String, Object> metadata;
+    private int answeredFieldCount;
+    private int totalFieldCount;
+    private double completionRate;
 }

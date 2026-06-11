@@ -15,10 +15,14 @@ public class QuestionAnalyticsDto {
     private String fieldId;
     private String type;
     private String label;
+    private boolean required;
     private long responseCount;
     private long skippedCount;
+    private double completionRate;
     private Double average;
+    private Double median;
     private Double min;
     private Double max;
     private List<QuestionDistributionItemDto> distribution;
+    private List<TextAnswerSampleDto> topTextAnswers;
 }

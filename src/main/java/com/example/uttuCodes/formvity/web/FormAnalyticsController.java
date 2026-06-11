@@ -1,5 +1,6 @@
 package com.example.uttuCodes.formvity.web;
 
+import com.example.uttuCodes.formvity.dto.analytics.FormAnalyticsInsightsDto;
 import com.example.uttuCodes.formvity.dto.analytics.FormAnalyticsOverviewDto;
 import com.example.uttuCodes.formvity.dto.analytics.FormAnalyticsSummaryDto;
 import com.example.uttuCodes.formvity.dto.analytics.QuestionAnalyticsDto;
@@ -59,10 +60,21 @@ public class FormAnalyticsController {
     @GetMapping("/analytics/questions")
     public ResponseEntity<ApiResponse<List<QuestionAnalyticsDto>>> questions(
             @PathVariable UUID workspaceId,
-            @PathVariable UUID formId) {
+            @PathVariable UUID formId,
+            @RequestParam(defaultValue = "7") int days) {
         UUID userId = Utils.getLoggedInUserId();
         return ResponseEntity.ok(
-                ApiResponse.ok(formAnalyticsService.getQuestionBreakdown(workspaceId, formId, userId)));
+                ApiResponse.ok(formAnalyticsService.getQuestionBreakdown(workspaceId, formId, userId, days)));
+    }
+
+    @GetMapping("/analytics/insights")
+    public ResponseEntity<ApiResponse<FormAnalyticsInsightsDto>> insights(
+            @PathVariable UUID workspaceId,
+            @PathVariable UUID formId,
+            @RequestParam(defaultValue = "7") int days) {
+        UUID userId = Utils.getLoggedInUserId();
+        return ResponseEntity.ok(
+                ApiResponse.ok(formAnalyticsService.getInsights(workspaceId, formId, userId, days)));
     }
 
     @GetMapping("/submissions")

@@ -11,9 +11,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FormAnalyticsOverviewDto {
-    private FormAnalyticsSummaryDto summary;
-    private List<TimelineBucketDto> timeline;
-    private List<QuestionAnalyticsDto> questions;
-    private FormAnalyticsInsightsDto insights;
+public class DimensionInsightDto {
+    private String dimension;
+    private String label;
+    private long totalWithValue;
+    private List<QuestionDistributionItemDto> breakdown;
 }

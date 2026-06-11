@@ -1,5 +1,6 @@
 package com.example.uttuCodes.formvity.service;
 
+import com.example.uttuCodes.formvity.dto.analytics.FormAnalyticsInsightsDto;
 import com.example.uttuCodes.formvity.dto.analytics.FormAnalyticsOverviewDto;
 import com.example.uttuCodes.formvity.dto.analytics.FormAnalyticsSummaryDto;
 import com.example.uttuCodes.formvity.dto.analytics.QuestionAnalyticsDto;
@@ -18,7 +19,9 @@ public interface FormAnalyticsService {
 
     List<TimelineBucketDto> getTimeline(UUID workspaceId, UUID formId, UUID userId, int days);
 
-    List<QuestionAnalyticsDto> getQuestionBreakdown(UUID workspaceId, UUID formId, UUID userId);
+    List<QuestionAnalyticsDto> getQuestionBreakdown(UUID workspaceId, UUID formId, UUID userId, int days);
+
+    FormAnalyticsInsightsDto getInsights(UUID workspaceId, UUID formId, UUID userId, int days);
 
     Page<SubmissionListItemDto> listSubmissions(UUID workspaceId, UUID formId, UUID userId, int page, int size);
 }
