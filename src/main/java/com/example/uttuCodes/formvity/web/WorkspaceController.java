@@ -1,8 +1,8 @@
 package com.example.uttuCodes.formvity.web;
 
 import com.example.uttuCodes.formvity.dto.WorkSpaceCreateRequest;
-import com.example.uttuCodes.formvity.dto.WorkSpaceMemberInputDto;
 import com.example.uttuCodes.formvity.dto.WorkSpaceOutputDto;
+import com.example.uttuCodes.formvity.dto.WorkSpaceRenameRequest;
 import com.example.uttuCodes.formvity.dto.WorkspaceCardDto;
 import com.example.uttuCodes.formvity.dto.WorkspaceDashboardDto;
 import com.example.uttuCodes.formvity.dto.response.ApiResponse;
@@ -56,12 +56,6 @@ public class WorkspaceController {
         return ResponseEntity.ok(ApiResponse.ok(workSpaceService.getWorkspaceDashboard(workspaceId, userId)));
     }
 
-    @GetMapping("/{workspaceId}/members")
-    public ResponseEntity<ApiResponse<List<WorkSpaceMemberInputDto>>> listMembers(
-            @PathVariable UUID workspaceId) {
-        return ResponseEntity.ok(ApiResponse.ok(workSpaceService.getMembersList(workspaceId)));
-    }
-
     @DeleteMapping("/{workspaceId}")
     public ResponseEntity<ApiResponse<String>> deleteWorkspace(@PathVariable UUID workspaceId) {
         workSpaceService.deleteWorkspace(workspaceId);
@@ -74,5 +68,13 @@ public class WorkspaceController {
         dto.setWorkSpaceId(workspace.getWorkSpaceId());
         dto.setWorkSpaceName(workspace.getWorkSpaceName());
         return dto;
+    }
+
+    @PatchMapping("/{workspaceId}")
+    public ResponseEntity<ApiResponse<WorkSpaceOutputDto>> changeWorkspaceName(
+            @PathVariable UUID workspaceId,
+            @RequestBody @Valid WorkSpaceRenameRequest request) {
+        WorkSpacesEntity updated = workSpaceService.changeWorkspaceName(workspaceId, request.getWorkSpaceName());
+        return ResponseEntity.ok(ApiResponse.ok(toOutputDto(updated), "Workspace renamed"));
     }
 }

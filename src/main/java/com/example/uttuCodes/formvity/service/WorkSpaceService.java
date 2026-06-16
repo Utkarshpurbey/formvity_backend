@@ -1,7 +1,6 @@
 package com.example.uttuCodes.formvity.service;
 
 import com.example.uttuCodes.formvity.dto.WorkSpaceCreateRequest;
-import com.example.uttuCodes.formvity.dto.WorkSpaceMemberInputDto;
 import com.example.uttuCodes.formvity.dto.WorkSpaceOutputDto;
 import com.example.uttuCodes.formvity.dto.WorkspaceCardDto;
 import com.example.uttuCodes.formvity.dto.WorkspaceDashboardDto;
@@ -23,5 +22,5 @@ public interface WorkSpaceService {
 
     void deleteWorkspace(UUID workSpaceId);
 
-    List<WorkSpaceMemberInputDto> getMembersList(UUID workSpaceId);
+    WorkSpacesEntity changeWorkspaceName(UUID workspaceId, String workspaceName);
 }

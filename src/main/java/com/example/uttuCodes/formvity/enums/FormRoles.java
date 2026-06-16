@@ -4,5 +4,4 @@ public enum FormRoles {
     ADMIN,
     EDITOR,
     VIEWER,
-    ATTENDEE
 }

@@ -35,6 +35,14 @@ public class WorkspaceMemberEntity {
     @NotNull
     public LocalDateTime createdAt;
 
+    public static WorkspaceMemberEntity of(
+            UUID userId, WorkSpacesEntity workspace, FormRoles role) {
+        WorkspaceMemberEntity member = new WorkspaceMemberEntity();
+        member.setUserId(userId);
+        member.setWorkspace(workspace);
+        member.setRole(role);
+        return member;
+    }
 
     @PrePersist
     void prepersist(){
@@ -42,7 +50,7 @@ public class WorkspaceMemberEntity {
             this.createdAt = LocalDateTime.now();
         }
         if (this.role == null) {
-            this.role = FormRoles.ATTENDEE;
+            this.role = FormRoles.VIEWER;
         }
         if(this.active == null){
             this.active = Boolean.TRUE;

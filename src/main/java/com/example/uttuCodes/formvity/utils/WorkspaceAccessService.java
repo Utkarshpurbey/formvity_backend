@@ -11,8 +11,13 @@ import java.util.UUID;
 @AllArgsConstructor
 public class WorkspaceAccessService {
     private WorkspaceMemberRepository workspaceMemberRepository;
+
+    public boolean isPartOfWorkspace(UUID userId,UUID workspaceId){
+        return workspaceMemberRepository.existsByWorkspace_WorkSpaceIdAndUserIdAndActiveTrue(workspaceId,userId);
+    }
+
     public void requireUserExistInWorkSpace(UUID userId, UUID workspaceId){
-         boolean isMember = workspaceMemberRepository.existsByWorkspace_WorkSpaceIdAndUserIdAndActiveTrue(workspaceId,userId);
+        boolean isMember = isPartOfWorkspace(userId,workspaceId);
          if(!isMember){
              throw FormvityException.forbidden(
                      "User is either not active or is not part of this workspace " + workspaceId);

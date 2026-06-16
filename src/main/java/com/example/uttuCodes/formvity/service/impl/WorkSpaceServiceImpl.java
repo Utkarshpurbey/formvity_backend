@@ -1,7 +1,6 @@
 package com.example.uttuCodes.formvity.service.impl;
 
 import com.example.uttuCodes.formvity.dto.WorkSpaceCreateRequest;
-import com.example.uttuCodes.formvity.dto.WorkSpaceMemberInputDto;
 import com.example.uttuCodes.formvity.dto.WorkSpaceOutputDto;
 import com.example.uttuCodes.formvity.dto.WorkspaceCardDto;
 import com.example.uttuCodes.formvity.dto.WorkspaceDashboardDto;
@@ -14,6 +13,7 @@ import com.example.uttuCodes.formvity.repository.FormRepository;
 import com.example.uttuCodes.formvity.repository.WorkSpaceRepository;
 import com.example.uttuCodes.formvity.repository.WorkspaceMemberRepository;
 import com.example.uttuCodes.formvity.service.WorkSpaceService;
+import com.example.uttuCodes.formvity.utils.Utils;
 import com.example.uttuCodes.formvity.utils.WorkspaceAccessService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 
 @Slf4j
 @Service
@@ -113,47 +112,53 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
 
     @Override
     public WorkSpacesEntity getWorkSpaceMetaData(UUID workSpaceId) {
-      try{
-          WorkSpacesEntity workSpacesEntity =  workSpaceRepository.findByWorkSpaceId(workSpaceId);
-          if(workSpacesEntity == null || !workSpacesEntity.isActive()){
-              throw FormvityException.notFound("No active workspace found for id: " + workSpaceId);
-          }
-          return workSpacesEntity;
+        try {
+            WorkSpacesEntity workSpacesEntity = workSpaceRepository.findByWorkSpaceId(workSpaceId);
+            if (workSpacesEntity == null || !workSpacesEntity.isActive()) {
+                throw FormvityException.notFound("No active workspace found for id: " + workSpaceId);
+            }
+            return workSpacesEntity;
 
-      }catch (FormvityException e){
-          throw e;
-      }catch (Exception e){
-          throw FormvityException.internalServerError("Unable to load workspace. Please try again later.");
-      }
+        } catch (FormvityException e) {
+            throw e;
+        } catch (Exception e) {
+            throw FormvityException.internalServerError("Unable to load workspace. Please try again later.");
+        }
     }
 
     @Override
-    public void deleteWorkspace(UUID workSpaceId){
-        try{
+    public void deleteWorkspace(UUID workSpaceId) {
+        try {
             WorkSpacesEntity workSpacesEntity = getWorkSpaceMetaData(workSpaceId);
-            if(workSpacesEntity == null || !workSpacesEntity.isActive()){
+            if (workSpacesEntity == null || !workSpacesEntity.isActive()) {
                 throw FormvityException.notFound("No active workspace found for id: " + workSpaceId);
             }
             workSpacesEntity.setActive(false);
             workSpaceRepository.save(workSpacesEntity);
-        }catch (FormvityException e){
+        } catch (FormvityException e) {
             throw e;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw FormvityException.internalServerError("Unable to delete workspace. Please try again later.");
         }
     }
 
     @Override
-    public List<WorkSpaceMemberInputDto> getMembersList(UUID workSpaceId) {
-       try{
-           List<WorkspaceMemberEntity> w =  workspaceMemberRepository.findByWorkspace_WorkSpaceId(workSpaceId);
-           return w.stream()
-                   .map(u -> modelMapper.map(u,WorkSpaceMemberInputDto.class))
-                   .toList();
-       }catch (Exception e){
-           throw FormvityException.internalServerError(
-                   "Unable to load workspace members for workspace " + workSpaceId + ". Please try again later.");
-       }
+    public WorkSpacesEntity changeWorkspaceName(UUID workspaceId, String workspaceName) {
+        UUID userId = Utils.getLoggedInUserId();
+        requireAuthenticatedUser(userId);
+        workspaceAccessService.requireUserExistInWorkSpace(userId, workspaceId);
+
+        if (workspaceName == null || workspaceName.isBlank()) {
+            throw FormvityException.badRequest("Workspace name is required");
+        }
+
+        WorkSpacesEntity workSpacesEntity = getWorkSpaceMetaData(workspaceId);
+        String trimmedName = workspaceName.trim();
+        workSpacesEntity.setWorkSpaceName(trimmedName);
+        workSpacesEntity.setUpdatedAt(java.time.LocalDateTime.now());
+        WorkSpacesEntity saved = workSpaceRepository.save(workSpacesEntity);
+        log.info("Name changed to {} for workspaceId {}", trimmedName, workspaceId);
+        return saved;
     }
 
     private static void requireAuthenticatedUser(UUID userId) {
