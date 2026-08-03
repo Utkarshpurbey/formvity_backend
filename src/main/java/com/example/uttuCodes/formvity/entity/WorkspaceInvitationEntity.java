@@ -44,8 +44,4 @@ public class WorkspaceInvitationEntity {
     private LocalDateTime invitedAt;
     private LocalDateTime expireAt;
 
-//    @PrePersist
-//    void prePersist(){
-//    }
-
 }

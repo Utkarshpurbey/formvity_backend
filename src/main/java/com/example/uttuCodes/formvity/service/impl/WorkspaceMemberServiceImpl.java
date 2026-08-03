@@ -26,7 +26,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -45,14 +49,34 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
     public List<WorkSpaceMemberInputDto> getMembersList(UUID workSpaceId) {
         try {
             List<WorkspaceMemberEntity> w = workspaceMemberRepository.findByWorkspace_WorkSpaceId(workSpaceId);
+            List<UUID> userIds = w.stream()
+                    .map(WorkspaceMemberEntity::getUserId)
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .toList();
+
+            Map<UUID, UserEntity> userMap = userRepository.findAllById(userIds).stream()
+                    .collect(Collectors.toMap(UserEntity::getId, Function.identity(), (a, b) -> a));
+
             return w.stream()
-                    .map(u -> modelMapper.map(u, WorkSpaceMemberInputDto.class))
+                    .map(u -> {
+                        WorkSpaceMemberInputDto dto = modelMapper.map(u, WorkSpaceMemberInputDto.class);
+                        if (u.getUserId() != null && userMap.containsKey(u.getUserId())) {
+                            UserEntity user = userMap.get(u.getUserId());
+                            dto.setDisplayName(user.getDisplayName());
+                            dto.setUserName(user.getDisplayName());
+                            dto.setEmail(user.getEmail());
+                        }
+                        return dto;
+                    })
                     .toList();
         } catch (Exception e) {
+            log.error("Unable to load workspace members for workspace {}", workSpaceId, e);
             throw FormvityException.internalServerError(
                     "Unable to load workspace members for workspace " + workSpaceId + ". Please try again later.");
         }
     }
+
 
     private String buildInviteUrl(String token, String email) {
         if (token != null && !token.isEmpty()) {
