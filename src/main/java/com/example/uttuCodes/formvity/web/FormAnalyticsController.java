@@ -8,9 +8,11 @@ import com.example.uttuCodes.formvity.dto.analytics.SubmissionListItemDto;
 import com.example.uttuCodes.formvity.dto.analytics.TimelineBucketDto;
 import com.example.uttuCodes.formvity.dto.response.ApiResponse;
 import com.example.uttuCodes.formvity.service.FormAnalyticsService;
+import com.example.uttuCodes.formvity.service.FormExcelExportService;
 import com.example.uttuCodes.formvity.utils.Utils;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +29,7 @@ import java.util.UUID;
 public class FormAnalyticsController {
 
     private final FormAnalyticsService formAnalyticsService;
+    private final FormExcelExportService formExcelExportService;
 
     @GetMapping("/analytics")
     public ResponseEntity<ApiResponse<FormAnalyticsOverviewDto>> overview(
@@ -87,4 +90,24 @@ public class FormAnalyticsController {
         return ResponseEntity.ok(
                 ApiResponse.ok(formAnalyticsService.listSubmissions(workspaceId, formId, userId, page, size)));
     }
+
+    @GetMapping(value = {"/export/excel", "/export/xlsx", "/submissions/export/excel"}, produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public ResponseEntity<byte[]> exportSubmissionsExcel(
+            @PathVariable UUID workspaceId,
+            @PathVariable UUID formId) {
+        UUID userId = Utils.getLoggedInUserId();
+        byte[] excelBytes = formExcelExportService.exportSubmissionsToExcel(workspaceId, formId, userId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_TYPE, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        headers.setContentDispositionFormData("attachment", "submissions-export.xlsx");
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(excelBytes);
+    }
 }
+
+
+
