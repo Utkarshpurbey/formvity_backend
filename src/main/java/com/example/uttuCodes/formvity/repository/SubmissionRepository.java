@@ -25,6 +25,16 @@ public interface SubmissionRepository extends JpaRepository<SubmissionEntity, UU
     Page<SubmissionEntity> findByForm_IdOrderByCreatedAtDesc(UUID formId, Pageable pageable);
 
     @Query("""
+            SELECT DISTINCT s FROM SubmissionEntity s
+            JOIN SubmissionTagEntity st ON st.submission.id = s.id
+            WHERE s.form.id = :formId
+              AND st.tag.id = :tagId
+              AND st.tag.active = true
+            ORDER BY s.createdAt DESC
+            """)
+    Page<SubmissionEntity> findByFormIdAndTagIdOrderByCreatedAtDesc(@Param("formId") UUID formId, @Param("tagId") UUID tagId, Pageable pageable);
+
+    @Query("""
             SELECT s FROM SubmissionEntity s
             JOIN FETCH s.publication
             WHERE s.form.id = :formId

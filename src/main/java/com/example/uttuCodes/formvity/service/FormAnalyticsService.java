@@ -8,6 +8,8 @@ import com.example.uttuCodes.formvity.dto.analytics.SubmissionListItemDto;
 import com.example.uttuCodes.formvity.dto.analytics.TimelineBucketDto;
 import org.springframework.data.domain.Page;
 
+import com.example.uttuCodes.formvity.dto.analytics.FormTagAnalyticsSummaryDto;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -23,5 +25,9 @@ public interface FormAnalyticsService {
 
     FormAnalyticsInsightsDto getInsights(UUID workspaceId, UUID formId, UUID userId, int days);
 
+    FormTagAnalyticsSummaryDto getTagAnalytics(UUID workspaceId, UUID formId, UUID userId, int days);
+
     Page<SubmissionListItemDto> listSubmissions(UUID workspaceId, UUID formId, UUID userId, int page, int size);
+
+    Page<SubmissionListItemDto> listSubmissions(UUID workspaceId, UUID formId, UUID userId, UUID tagId, int page, int size);
 }

@@ -3,6 +3,7 @@ package com.example.uttuCodes.formvity.web;
 import com.example.uttuCodes.formvity.dto.analytics.FormAnalyticsInsightsDto;
 import com.example.uttuCodes.formvity.dto.analytics.FormAnalyticsOverviewDto;
 import com.example.uttuCodes.formvity.dto.analytics.FormAnalyticsSummaryDto;
+import com.example.uttuCodes.formvity.dto.analytics.FormTagAnalyticsSummaryDto;
 import com.example.uttuCodes.formvity.dto.analytics.QuestionAnalyticsDto;
 import com.example.uttuCodes.formvity.dto.analytics.SubmissionListItemDto;
 import com.example.uttuCodes.formvity.dto.analytics.TimelineBucketDto;
@@ -80,15 +81,26 @@ public class FormAnalyticsController {
                 ApiResponse.ok(formAnalyticsService.getInsights(workspaceId, formId, userId, days)));
     }
 
+    @GetMapping("/analytics/tags")
+    public ResponseEntity<ApiResponse<FormTagAnalyticsSummaryDto>> tags(
+            @PathVariable UUID workspaceId,
+            @PathVariable UUID formId,
+            @RequestParam(defaultValue = "7") int days) {
+        UUID userId = Utils.getLoggedInUserId();
+        return ResponseEntity.ok(
+                ApiResponse.ok(formAnalyticsService.getTagAnalytics(workspaceId, formId, userId, days)));
+    }
+
     @GetMapping("/submissions")
     public ResponseEntity<ApiResponse<Page<SubmissionListItemDto>>> submissions(
             @PathVariable UUID workspaceId,
             @PathVariable UUID formId,
+            @RequestParam(required = false) UUID tagId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         UUID userId = Utils.getLoggedInUserId();
         return ResponseEntity.ok(
-                ApiResponse.ok(formAnalyticsService.listSubmissions(workspaceId, formId, userId, page, size)));
+                ApiResponse.ok(formAnalyticsService.listSubmissions(workspaceId, formId, userId, tagId, page, size)));
     }
 
     @GetMapping(value = {"/export/excel", "/export/xlsx", "/submissions/export/excel"}, produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")

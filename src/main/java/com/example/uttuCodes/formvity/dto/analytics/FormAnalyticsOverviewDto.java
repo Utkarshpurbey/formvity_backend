@@ -16,4 +16,5 @@ public class FormAnalyticsOverviewDto {
     private List<TimelineBucketDto> timeline;
     private List<QuestionAnalyticsDto> questions;
     private FormAnalyticsInsightsDto insights;
+    private FormTagAnalyticsSummaryDto tags;
 }

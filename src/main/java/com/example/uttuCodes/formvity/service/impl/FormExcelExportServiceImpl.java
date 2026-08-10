@@ -32,6 +32,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.example.uttuCodes.formvity.entity.SubmissionTagEntity;
+import com.example.uttuCodes.formvity.repository.SubmissionTagRepository;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -40,6 +43,7 @@ public class FormExcelExportServiceImpl implements FormExcelExportService {
     private final FormRepository formRepository;
     private final FormPublicationRepository formPublicationRepository;
     private final SubmissionRepository submissionRepository;
+    private final SubmissionTagRepository submissionTagRepository;
     private final WorkspaceAccessService workspaceAccessService;
 
     @Override
@@ -75,8 +79,9 @@ public class FormExcelExportServiceImpl implements FormExcelExportService {
             XSSFRow headerRow = sheet.createRow(0);
             createHeaderCell(headerRow, 0, "#", headerStyle);
             createHeaderCell(headerRow, 1, "Submitted At", headerStyle);
+            createHeaderCell(headerRow, 2, "Tags", headerStyle);
 
-            int colIndex = 2;
+            int colIndex = 3;
             // Dynamic Respondent Detail Columns
             for (String respKey : respondentKeys) {
                 createHeaderCell(headerRow, colIndex++, respKey, headerStyle);
@@ -111,7 +116,15 @@ public class FormExcelExportServiceImpl implements FormExcelExportService {
                 String timeStr = s.getCreatedAt() != null ? s.getCreatedAt().format(dtf) : "";
                 createCell(row, 1, timeStr, dataStyle);
 
-                int dataColIndex = 2;
+                // Col 2: Tags
+                List<SubmissionTagEntity> subTags = submissionTagRepository.findBySubmission_Id(s.getId());
+                String tagsStr = subTags.stream()
+                        .filter(st -> st.getTag() != null && st.getTag().isActive())
+                        .map(st -> st.getTag().getName())
+                        .collect(Collectors.joining(", "));
+                createCell(row, 2, tagsStr, dataStyle);
+
+                int dataColIndex = 3;
                 // Respondent Details per Column
                 Map<String, Object> respondent = s.getRespondent();
                 for (String respKey : respondentKeys) {
@@ -138,7 +151,7 @@ public class FormExcelExportServiceImpl implements FormExcelExportService {
             }
 
             // Auto-size columns with safety limits
-            int totalCols = 2 + respondentKeys.size() + fields.size();
+            int totalCols = 3 + respondentKeys.size() + fields.size();
             for (int i = 0; i < totalCols; i++) {
                 sheet.autoSizeColumn(i);
                 int currentWidth = sheet.getColumnWidth(i);

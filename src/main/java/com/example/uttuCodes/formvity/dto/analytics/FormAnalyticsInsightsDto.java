@@ -18,4 +18,5 @@ public class FormAnalyticsInsightsDto {
     private TemporalInsightsDto temporal;
     private CompletionInsightsDto completion;
     private List<PublicationVersionInsightDto> publications;
+    private FormTagAnalyticsSummaryDto tags;
 }

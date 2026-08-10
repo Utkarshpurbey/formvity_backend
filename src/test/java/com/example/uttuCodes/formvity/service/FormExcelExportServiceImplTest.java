@@ -28,6 +28,8 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.example.uttuCodes.formvity.repository.SubmissionTagRepository;
+
 @ExtendWith(MockitoExtension.class)
 class FormExcelExportServiceImplTest {
 
@@ -39,6 +41,9 @@ class FormExcelExportServiceImplTest {
 
     @Mock
     private SubmissionRepository submissionRepository;
+
+    @Mock
+    private SubmissionTagRepository submissionTagRepository;
 
     @Mock
     private WorkspaceAccessService workspaceAccessService;
@@ -93,16 +98,17 @@ class FormExcelExportServiceImplTest {
             assertNotNull(headerRow);
             assertEquals("#", headerRow.getCell(0).getStringCellValue());
             assertEquals("Submitted At", headerRow.getCell(1).getStringCellValue());
-            assertEquals("email", headerRow.getCell(2).getStringCellValue());
-            assertEquals("Your Rating", headerRow.getCell(3).getStringCellValue());
-            assertEquals("Comments", headerRow.getCell(4).getStringCellValue());
+            assertEquals("Tags", headerRow.getCell(2).getStringCellValue());
+            assertEquals("email", headerRow.getCell(3).getStringCellValue());
+            assertEquals("Your Rating", headerRow.getCell(4).getStringCellValue());
+            assertEquals("Comments", headerRow.getCell(5).getStringCellValue());
 
             XSSFRow dataRow = sheet.getRow(1);
             assertNotNull(dataRow);
             assertEquals("1", dataRow.getCell(0).getStringCellValue());
-            assertEquals("user@example.com", dataRow.getCell(2).getStringCellValue());
-            assertEquals("5", dataRow.getCell(3).getStringCellValue());
-            assertEquals("Great experience!", dataRow.getCell(4).getStringCellValue());
+            assertEquals("user@example.com", dataRow.getCell(3).getStringCellValue());
+            assertEquals("5", dataRow.getCell(4).getStringCellValue());
+            assertEquals("Great experience!", dataRow.getCell(5).getStringCellValue());
         }
 
         verify(workspaceAccessService).requireUserExistInWorkSpace(userId, workspaceId);
@@ -142,20 +148,21 @@ class FormExcelExportServiceImplTest {
             XSSFRow headerRow = sheet.getRow(0);
             assertNotNull(headerRow);
 
-            // Columns: # (0), Submitted At (1), email (2), fullName (3), Ticket Type (4), Attendee Name (5), Organization (6)
-            assertEquals("email", headerRow.getCell(2).getStringCellValue());
-            assertEquals("fullName", headerRow.getCell(3).getStringCellValue());
-            assertEquals("Ticket Type", headerRow.getCell(4).getStringCellValue());
-            assertEquals("Attendee Name", headerRow.getCell(5).getStringCellValue());
-            assertEquals("Organization", headerRow.getCell(6).getStringCellValue());
+            // Columns: # (0), Submitted At (1), Tags (2), email (3), fullName (4), Ticket Type (5), Attendee Name (6), Organization (7)
+            assertEquals("Tags", headerRow.getCell(2).getStringCellValue());
+            assertEquals("email", headerRow.getCell(3).getStringCellValue());
+            assertEquals("fullName", headerRow.getCell(4).getStringCellValue());
+            assertEquals("Ticket Type", headerRow.getCell(5).getStringCellValue());
+            assertEquals("Attendee Name", headerRow.getCell(6).getStringCellValue());
+            assertEquals("Organization", headerRow.getCell(7).getStringCellValue());
 
             XSSFRow dataRow = sheet.getRow(1);
             assertNotNull(dataRow);
-            assertEquals("ewqq@gmail.com", dataRow.getCell(2).getStringCellValue());
-            assertEquals("123das", dataRow.getCell(3).getStringCellValue());
-            assertEquals("VIP", dataRow.getCell(4).getStringCellValue());
-            assertEquals("Utkarsh Purbey", dataRow.getCell(5).getStringCellValue());
-            assertEquals("Formvity", dataRow.getCell(6).getStringCellValue());
+            assertEquals("ewqq@gmail.com", dataRow.getCell(3).getStringCellValue());
+            assertEquals("123das", dataRow.getCell(4).getStringCellValue());
+            assertEquals("VIP", dataRow.getCell(5).getStringCellValue());
+            assertEquals("Utkarsh Purbey", dataRow.getCell(6).getStringCellValue());
+            assertEquals("Formvity", dataRow.getCell(7).getStringCellValue());
         }
     }
 }

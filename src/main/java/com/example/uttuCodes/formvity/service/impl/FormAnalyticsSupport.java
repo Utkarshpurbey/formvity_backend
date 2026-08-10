@@ -17,14 +17,17 @@ final class FormAnalyticsSupport {
     private FormAnalyticsSupport() {}
 
     static int clampDays(int days) {
-        return Math.min(Math.max(days, 1), 90);
+        if (days <= 0) {
+            return 0;
+        }
+        return Math.min(days, 365);
     }
 
     static List<SubmissionEntity> filterByDays(List<SubmissionEntity> submissions, Integer days) {
-        if (days == null) {
+        if (days == null || days <= 0) {
             return submissions;
         }
-        LocalDateTime from = LocalDate.now().minusDays(clampDays(days) - 1L).atStartOfDay();
+        LocalDateTime from = LocalDate.now().minusDays(days).atStartOfDay();
         return submissions.stream()
                 .filter(s -> s.getCreatedAt() != null && !s.getCreatedAt().isBefore(from))
                 .toList();
